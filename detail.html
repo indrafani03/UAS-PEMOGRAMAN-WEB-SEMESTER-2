@@ -121,9 +121,21 @@
             <div class="row">
                 <h1 id="mainJudul"></h1>
                 <div id="mainContent"></div>
-
-
-                
+                <hr class="featurette-divider">
+                <div class="container my-5">
+                  <h2>Comments</h2>
+                  <div class="list-group" id="listComment">  
+                  </div>
+              </div>
+                <div class="mb-3 mt-3">
+                  <label for="email" class="form-label">Email address</label>
+                  <input type="email" class="form-control" id="email" placeholder="name@example.com">
+                </div>
+                <div class="mb-3">
+                  <label for="comment" class="form-label">Comment</label>
+                  <textarea class="form-control" id="comment" rows="3"></textarea>
+                </div>
+                <button type="button" class="btn btn-primary" onclick="addComment()">Comment</button>
             </div>           
             <hr class="featurette-divider">
          </div>
@@ -169,6 +181,71 @@
             // Handle any errors
             console.error('There has been a problem with your fetch operation:', error);
           });
+
+          fetch('commets.json')
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Network response was not ok');
+            }
+            return response.json();
+          })
+          .then(data => {
+            // console.log(data)
+            let listComment  = document.getElementById('listComment');
+            for(let i=0; i<data.length; i++) {
+                if(id == data[i].id_post) {
+                  for(let a=0 ; a < data[i].comments.length; a++) {
+                  listComment.innerHTML  += ` <div class="list-group-item list-group-item-action d-flex gap-3 py-3">
+                          <img src="https://via.placeholder.com/50" alt="user-avatar" class="rounded-circle flex-shrink-0">
+                          <div class="d-flex gap-2 w-100 justify-content-between">
+                              <div>
+                                  <h5 class="mb-0">${data[i].comments[a].email}</h5>
+                                  <p class="mb-0 opacity-75">${data[i].comments[a].comment}</p>
+                              </div>
+                              <small class="opacity-50 text-nowrap">${data[i].comments[a].date}</small>
+                          </div>
+                      </div>`;
+                  }
+                }
+              
+            }
+
+          })
+          .catch(error => {
+            // Handle any errors
+            console.error('There has been a problem with your fetch operation:', error);
+          });
+
+
+          function addComment() {
+            let email  = document.getElementById('email');
+            let comment = document.getElementById('comment');
+
+            let listComment  = document.getElementById('listComment');
+
+            if(email.value == "" || comment == "") {
+               alert("Email atau comment wajib di input")
+               return;
+            }
+
+            var currentDate = new Date();
+            var formattedDate = currentDate.toLocaleDateString(); 
+
+            listComment.innerHTML  += ` <div class="list-group-item list-group-item-action d-flex gap-3 py-3">
+                          <img src="https://via.placeholder.com/50" alt="user-avatar" class="rounded-circle flex-shrink-0">
+                          <div class="d-flex gap-2 w-100 justify-content-between">
+                              <div>
+                                  <h5 class="mb-0">${email.value}</h5>
+                                  <p class="mb-0 opacity-75">${comment.value}</p>
+                              </div>
+                              <small class="opacity-50 text-nowrap">${formattedDate}</small>
+                          </div>
+                      </div>`;
+            
+                      email.value = "";
+                      comment.value = "";
+
+          }
 
       </script>
 
